@@ -53,7 +53,7 @@ public class Shooting : MonoBehaviour {
         {
             bullet = BulletPool.Instance.GetBullet();
             bullet.transform.position = weapon.transform.position;
-            bullet.velocity = transform.up * force;
+            //bullet.velocity = transform.up * force;
             bullet.velocity = weapon.transform.forward * force;
             CanShot = false;
             StartCoroutine(Shot());
