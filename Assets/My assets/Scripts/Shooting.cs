@@ -42,28 +42,44 @@ public class Shooting : MonoBehaviour {
     private void Start()
     {
         // waitToShot = timeToShot;
-        canShot = true;
+        CanShot = true;
     }
 
-    public void Attack()
+    public void Attack()//organizar
     {
-        if (PlayerController.Instance.JoyButton.pressed && canShot)
+        //weapon.transform.rotation = Quaternion.LookRotation( aimDirection,Vector3.up);
+            weapon.transform.rotation = Quaternion.LookRotation(new Vector3(PlayerController.Instance.AimDirection.x, PlayerController.Instance.AimDirection.z, PlayerController.Instance.AimDirection.y));
+        if (PlayerController.Instance.JoyButton.pressed && CanShot)
         {
             bullet = BulletPool.Instance.GetBullet();
             bullet.transform.position = weapon.transform.position;
-            // bullet.velocity = transform.up * force;
-            weapon.transform.rotation=Quaternion.LookRotation(aimDirection);
-            bullet.velocity = weapon.transform.up * force;
-            canShot = false;
+            bullet.velocity = transform.up * force;
+            bullet.velocity = weapon.transform.forward * force;
+            CanShot = false;
             StartCoroutine(Shot());
+            
         }
-
 
     }
 
     public IEnumerator Shot()
     {
         yield return new WaitForSeconds(timeToShot);
-        canShot = true;
+        CanShot = true;
     }
+
+    #region Get&Set
+    public bool CanShot
+    {
+        get
+        {
+            return canShot;
+        }
+
+        set
+        {
+            canShot = value;
+        }
+    }
+    #endregion
 }

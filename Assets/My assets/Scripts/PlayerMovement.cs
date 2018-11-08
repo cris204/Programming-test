@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
+
+
     [Header("General")]
     [SerializeField]
     private float speed;
@@ -71,6 +73,14 @@ public class PlayerMovement : MonoBehaviour {
         {
             anim.SetFloat("Speed", vectorSpeed.magnitude);
         }
+        if (!Shooting.Instance.CanShot || PlayerController.Instance.JoyButton.pressed)
+        {
+            anim.SetLayerWeight(1,1);
+        }
+        else
+        {
+            anim.SetLayerWeight(1, 0);
+        }
     }
 
     private void CalculateDirections()
@@ -83,7 +93,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             aimDirection.z = vectorSpeed.y;
         }
-        transform.rotation=Quaternion.LookRotation(aimDirection.normalized);
+        transform.rotation=Quaternion.LookRotation(AimDirection.normalized);
 
     }
     private void AsignInputs()
@@ -92,5 +102,21 @@ public class PlayerMovement : MonoBehaviour {
         vectorSpeed.y = (joystick.Vertical * (speed * Time.deltaTime));
     }
 
+    #region Get&Set
+
+    public Vector3 AimDirection
+    {
+        get
+        {
+            return aimDirection;
+        }
+
+        set
+        {
+            aimDirection = value;
+        }
+    }
+
+    #endregion
 
 }
