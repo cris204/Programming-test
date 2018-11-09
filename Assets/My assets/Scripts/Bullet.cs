@@ -4,17 +4,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    private Rigidbody rigidBody;
+    private Rigidbody rb;
     private void Awake()
     {
 
-        rigidBody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
 
 
     private void OnBecameInvisible()
     {
-        BulletPool.Instance.ReleaseBullet(rigidBody);
+        BulletPool.Instance.ReleaseBullet(rb);
     }
 }

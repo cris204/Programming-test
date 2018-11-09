@@ -42,8 +42,6 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     public Vector3 bulletDirection;
 
-
-
     private void Awake()
     {
         if (instance == null)
@@ -81,7 +79,7 @@ public class PlayerController : MonoBehaviour {
 
     private void AsignAnimation()
     {
-        if (rb.velocity.normalized != Vector3.zero)
+        if (rb.velocity.x != 0 || rb.velocity.y != 0)
         {
             anim.SetFloat("Speed", vectorSpeed.magnitude);
         }
@@ -108,6 +106,7 @@ public class PlayerController : MonoBehaviour {
         transform.rotation = Quaternion.LookRotation(AimDirection.normalized);
 
     }
+
     private void AsignInputs()
     {
         vectorSpeed.x = (leftjoystick.Horizontal * (speed * Time.deltaTime));
@@ -117,27 +116,48 @@ public class PlayerController : MonoBehaviour {
         vectorRotation.y = (rightjoystick.Vertical * (speed * Time.deltaTime));
     }
 
-    #region Get&Set
-
-    public Vector3 AimDirection
-    {
-        get
-        {
-            return aimDirection;
-        }
-
-        set
-        {
-            aimDirection = value;
-        }
-    }
-
-    #endregion
-
     public void Shoot()
     {
         Shooting.Instance.Attack();
     }
+
+
+    #region Collisions
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Door"))
+        {
+            other.GetComponent<Animator>().SetBool("Near", true);
+        }
+        if (other.CompareTag("Inside"))
+        {
+            other.GetComponent<SpriteRenderer>().enabled=(false);
+        }
+        if (other.CompareTag("DoorInside"))
+        {
+            other.transform.parent.GetComponent<SpriteRenderer>().enabled = (false);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Door"))
+        {
+            other.GetComponent<Animator>().SetBool("Near", false);
+        }
+        if (other.CompareTag("Inside"))
+        {
+            other.GetComponent<SpriteRenderer>().enabled = (true);
+        }
+        if (other.CompareTag("DoorInside"))
+        {
+            other.transform.parent.GetComponent<SpriteRenderer>().enabled = (true);
+        }
+    }
+
+
+    #endregion
 
     #region Get&Set
     public JoyButton JoyButton
@@ -152,5 +172,19 @@ public class PlayerController : MonoBehaviour {
             joyButton = value;
         }
     }
+
+    public Vector3 AimDirection
+    {
+        get
+        {
+            return aimDirection;
+        }
+
+        set
+        {
+            aimDirection = value;
+        }
+    }
+
     #endregion
 }
