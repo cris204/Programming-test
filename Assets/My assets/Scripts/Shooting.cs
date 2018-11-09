@@ -19,13 +19,17 @@ public class Shooting : MonoBehaviour {
     private WaitForSeconds waitToShot;
     [SerializeField]
     private bool canShot;
+    [SerializeField]
+    private Vector3 rotationVector;
     [Header("General")]
     [SerializeField]
-    private GameObject weapon;
+    private GameObject weaponPosition;
     [SerializeField]
     private float force;
     private Rigidbody bullet;
-    Vector3 aimDirection;
+    private Vector3 aimDirection;
+    [SerializeField]
+    private float offset;
 
     private void Awake()
     {
@@ -41,6 +45,8 @@ public class Shooting : MonoBehaviour {
 
     private void Start()
     {
+        rotationVector = new Vector3(35.262f, -2.06f, 22.851f);
+
         // waitToShot = timeToShot;
         CanShot = true;
     }
@@ -48,12 +54,17 @@ public class Shooting : MonoBehaviour {
     public void Attack()//organizar
     {
         //weapon.transform.rotation = Quaternion.LookRotation( aimDirection,Vector3.up);
-            weapon.transform.rotation = Quaternion.LookRotation(new Vector3(PlayerController.Instance.AimDirection.x, PlayerController.Instance.AimDirection.z, PlayerController.Instance.AimDirection.y));
+        rotationVector.x = PlayerController.Instance.AimDirection.x + offset;
+        rotationVector.y = PlayerController.Instance.AimDirection.z + offset;
+        rotationVector.z = PlayerController.Instance.AimDirection.y;
+        weaponPosition.transform.rotation = Quaternion.LookRotation(rotationVector);
+
         if (PlayerController.Instance.JoyButton.pressed && CanShot)
         {
+
             bullet = BulletPool.Instance.GetBullet();
-            bullet.transform.position = weapon.transform.position;
-            bullet.velocity = weapon.transform.forward * force;
+            bullet.transform.position = weaponPosition.transform.position;
+            bullet.velocity = weaponPosition.transform.forward * force;
             CanShot = false;
             StartCoroutine(Shot());
             

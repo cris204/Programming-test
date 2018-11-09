@@ -59,7 +59,8 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        vectorSpeed = new Vector2(0, 0);
+        vectorSpeed = Vector3.zero;
+        vectorRotation.y = (-100);
     }
 
     // Update is called once per frame
