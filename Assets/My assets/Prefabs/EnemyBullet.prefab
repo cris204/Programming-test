@@ -22,9 +22,9 @@ GameObject:
   - component: {fileID: 54539038399189564}
   - component: {fileID: 136059308421980982}
   - component: {fileID: 114019582007785482}
-  m_Layer: 0
-  m_Name: Weapon_Bullet
-  m_TagString: Untagged
+  m_Layer: 15
+  m_Name: EnemyBullet
+  m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4969533339372208}
   - component: {fileID: 33909815002356222}
   - component: {fileID: 23763166244492278}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: polySurface1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

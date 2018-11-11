@@ -23,7 +23,7 @@ public class Shooting : MonoBehaviour {
     private Vector3 rotationVector;
     [Header("General")]
     [SerializeField]
-    private GameObject weaponPosition;
+    private GameObject weapon;
     [SerializeField]
     private float force;
     private Rigidbody bullet;
@@ -57,14 +57,14 @@ public class Shooting : MonoBehaviour {
         rotationVector.x = PlayerController.Instance.AimDirection.x + offset;
         rotationVector.y = PlayerController.Instance.AimDirection.z + offset;
         rotationVector.z = PlayerController.Instance.AimDirection.y;
-        weaponPosition.transform.rotation = Quaternion.LookRotation(rotationVector);
+        weapon.transform.rotation = Quaternion.LookRotation(rotationVector);
 
         if (PlayerController.Instance.JoyButton.pressed && CanShot)
         {
 
             bullet = BulletPool.Instance.GetBullet();
-            bullet.transform.position = weaponPosition.transform.position;
-            bullet.velocity = weaponPosition.transform.forward * force;
+            bullet.transform.position = weapon.transform.position;
+            bullet.velocity = weapon.transform.forward * force;
             CanShot = false;
             StartCoroutine(Shot());
             

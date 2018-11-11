@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class BulletPool : MonoBehaviour
-{
+public class BulletEnemyPool : MonoBehaviour {
 
-    private static BulletPool instance;
+    private static BulletEnemyPool instance;
 
-    public static BulletPool Instance
+    public static BulletEnemyPool Instance
     {
         get
         {

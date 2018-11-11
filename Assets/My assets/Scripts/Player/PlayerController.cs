@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
     private Vector2 vectorRotation;
     private float deltaSpeed;
 
+
     [SerializeField]
     private Vector3 aimDirection = Vector2.zero;
 
@@ -60,7 +61,6 @@ public class PlayerController : MonoBehaviour {
     void Start()
     {
         vectorSpeed = Vector3.zero;
-        vectorRotation.y = (-100);
     }
 
     // Update is called once per frame
@@ -124,12 +124,14 @@ public class PlayerController : MonoBehaviour {
 
 
     #region Collisions
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Door"))
         {
-            other.GetComponent<Animator>().SetBool("Near", true);
+            if (GameManager.Instance.HaveKey)
+            {
+                other.GetComponent<Animator>().SetBool("Near", true);
+            }
         }
         if (other.CompareTag("Inside"))
         {
@@ -138,6 +140,23 @@ public class PlayerController : MonoBehaviour {
         if (other.CompareTag("DoorInside"))
         {
             other.transform.parent.GetComponent<SpriteRenderer>().enabled = (false);
+        }
+        if (other.CompareTag("Key"))
+        {
+            GameManager.Instance.HaveKey = true;
+            other.gameObject.SetActive(false);
+        }
+        if (other.CompareTag("LockDoor"))
+        {
+            if (GameManager.Instance.HaveKey)
+            {
+                other.gameObject.SetActive(false);
+            }
+            else
+            {
+                GameManager.Instance.ActivatedNeedAKey(true);
+            }
+            
         }
     }
 
@@ -154,6 +173,12 @@ public class PlayerController : MonoBehaviour {
         if (other.CompareTag("DoorInside"))
         {
             other.transform.parent.GetComponent<SpriteRenderer>().enabled = (true);
+        }
+        if (other.CompareTag("LockDoor"))
+        {
+
+            GameManager.Instance.ActivatedNeedAKey(false);
+
         }
     }
 
