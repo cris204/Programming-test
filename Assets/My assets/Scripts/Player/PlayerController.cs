@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour {
             return instance;
         }
     }
+    [Header("Stats")]
+    [SerializeField]
+    private float health;
 
     [Header("General")]
     [SerializeField]
@@ -22,7 +25,6 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private Vector2 vectorRotation;
     private float deltaSpeed;
-
 
     [SerializeField]
     private Vector3 aimDirection = Vector2.zero;
@@ -158,6 +160,15 @@ public class PlayerController : MonoBehaviour {
             }
             
         }
+
+        if (other.CompareTag("EnemyBullet"))
+        {
+            health -= other.GetComponent<EnemyBullet>().Damage;
+            if (health <= 0)
+            {
+                GameManager.Instance.GameOver();
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -186,6 +197,7 @@ public class PlayerController : MonoBehaviour {
     #endregion
 
     #region Get&Set
+
     public JoyButton JoyButton
     {
         get
@@ -209,6 +221,19 @@ public class PlayerController : MonoBehaviour {
         set
         {
             aimDirection = value;
+        }
+    }
+
+    public float Health
+    {
+        get
+        {
+            return health;
+        }
+
+        set
+        {
+            health = value;
         }
     }
 

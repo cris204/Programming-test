@@ -9,6 +9,8 @@ public class AIController : MonoBehaviour {
     [SerializeField]
     private Transform target;
     [SerializeField]
+    private Transform lastTarget;
+    [SerializeField]
     private Transform[] path;
     [SerializeField]
     private bool detectPlayer;
@@ -24,7 +26,11 @@ public class AIController : MonoBehaviour {
     private Vector3 targetPostition;
     [SerializeField]
     private GameObject model;
-    public Transform apuntar;
+    [SerializeField]
+    private Transform apuntar;
+    [SerializeField]
+    private float health;
+    
 
     // Use this for initialization
     void Start () {
@@ -35,30 +41,20 @@ public class AIController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         targetPostition.x = target.position.x;
         targetPostition.y = target.transform.position.y;
-        targetPostition.z= apuntar.position.z;
+        targetPostition.z = apuntar.position.z;
 
         apuntar.transform.LookAt(targetPostition);
+        correctRot.x = apuntar.transform.localEulerAngles.y + 90;
+        correctRot.y = -90;
+        correctRot.z = -90;
+        model.transform.localEulerAngles = correctRot;
 
-        correctRot.x = target.transform.position.x;
-        correctRot.y = apuntar.transform.position.y;
-        correctRot.z = target.transform.position.z;
+        pathManager.SetDestination(target.transform.position);
 
-        model.transform.LookAt(correctRot);
 
-        if (detectPlayer)
-        {
-            pathManager.SetDestination(target.transform.position);
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                pathManager.isStopped = true;
-            }
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                pathManager.isStopped = false;
-            }
-        }
     }
 
 
@@ -69,9 +65,22 @@ public class AIController : MonoBehaviour {
     {
         if (other.CompareTag("Player"))
         {
+            if (target.tag != "Player")
+            {
+                lastTarget = target;
+            }
+
             target = other.transform;
             detectPlayer = true;
             StartCoroutine("Shooting");
+        }
+        if (other.CompareTag("Bullet"))
+        {
+            health -= other.GetComponent<Bullet>().Damage;
+            if (health <= 0)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 
@@ -79,6 +88,9 @@ public class AIController : MonoBehaviour {
     {
         if (other.CompareTag("Player"))
         {
+
+            target = (lastTarget);
+
             detectPlayer = false;
             StopCoroutine("Shooting");
         }

@@ -20,6 +20,14 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject haveKeyText;
 
+    [Header("GameOver")]
+    [SerializeField]
+    private GameObject gameOverPanel;
+    [SerializeField]
+    private Image gameOverBG;
+    [SerializeField]
+    private Color gameOvercolorBG;
+
     private void Awake()
     {
         if (instance == null)
@@ -32,22 +40,38 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public void GameOver()
+    {
+
+            gameOverPanel.SetActive(true);
+            StartCoroutine(Fade());
+            Time.timeScale = 0;
+        
+    }
 
     public void ActivatedNeedAKey(bool activated)
     {
         haveKeyText.SetActive(activated);
     }
+
+    #region coroutine
+
+    IEnumerator Fade()
+    {
+        while (gameOverBG.color.a < 0.99f)
+        {
+            yield return null;
+
+            gameOvercolorBG.a = Mathf.Lerp(gameOvercolorBG.a, 1, 0.04f);
+            gameOverBG.color = gameOvercolorBG;
+
+
+        }
+    }
+
+    #endregion
 
     #region Get&Set
 
