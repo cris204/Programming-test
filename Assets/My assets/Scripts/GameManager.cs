@@ -20,13 +20,25 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject haveKeyText;
 
+    [Header("WinCondition"), SerializeField]
+    private float enemyNumber;
+
+
     [Header("GameOver")]
     [SerializeField]
     private GameObject gameOverPanel;
     [SerializeField]
     private Image gameOverBG;
     [SerializeField]
-    private Color gameOvercolorBG;
+    private Color gameOverColorBG;
+
+    [Header("Win")]
+    [SerializeField]
+    private GameObject winPanel;
+    [SerializeField]
+    private Image winBG;
+    [SerializeField]
+    private Color winColorBG;
 
     private void Awake()
     {
@@ -40,15 +52,31 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private void Update()
+    {
+        Win();
+        GameOver();
+    }
+
+    public void Win()
+    {
+        if (EnemyNumber<=0)
+        {
+            winPanel.SetActive(true);
+            StartCoroutine(Fade(true));
+            Time.timeScale = 0;
+        }
+    }
 
 
     public void GameOver()
     {
-
+        if (PlayerController.Instance.Health <= 0)
+        {
             gameOverPanel.SetActive(true);
-            StartCoroutine(Fade());
+            StartCoroutine(Fade(false));
             Time.timeScale = 0;
-        
+        }
     }
 
     public void ActivatedNeedAKey(bool activated)
@@ -58,16 +86,31 @@ public class GameManager : MonoBehaviour {
 
     #region coroutine
 
-    IEnumerator Fade()
+    IEnumerator Fade(bool winner)
     {
-        while (gameOverBG.color.a < 0.99f)
+        if (winner)
         {
-            yield return null;
+            while (winBG.color.a < 0.75f)
+            {
+                yield return null;
 
-            gameOvercolorBG.a = Mathf.Lerp(gameOvercolorBG.a, 1, 0.04f);
-            gameOverBG.color = gameOvercolorBG;
+                winColorBG.a = Mathf.Lerp(winColorBG.a, 1, 0.04f);
+                winBG.color = winColorBG;
 
 
+            }
+        }
+        else
+        {
+            while (gameOverBG.color.a < 0.75f)
+            {
+                yield return null;
+
+                gameOverColorBG.a = Mathf.Lerp(gameOverColorBG.a, 1, 0.04f);
+                gameOverBG.color = gameOverColorBG;
+
+
+            }
         }
     }
 
@@ -85,6 +128,19 @@ public class GameManager : MonoBehaviour {
         set
         {
             haveKey = value;
+        }
+    }
+
+    public float EnemyNumber
+    {
+        get
+        {
+            return enemyNumber;
+        }
+
+        set
+        {
+            enemyNumber = value;
         }
     }
 

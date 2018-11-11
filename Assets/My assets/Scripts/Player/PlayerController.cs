@@ -164,10 +164,6 @@ public class PlayerController : MonoBehaviour {
         if (other.CompareTag("EnemyBullet"))
         {
             health -= other.GetComponent<EnemyBullet>().Damage;
-            if (health <= 0)
-            {
-                GameManager.Instance.GameOver();
-            }
         }
     }
 

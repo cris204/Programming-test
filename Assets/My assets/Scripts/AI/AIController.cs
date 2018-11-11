@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AIController : MonoBehaviour {
 
-    private NavMeshAgent pathManager;
+    private NavMeshAgent navMesh;
     [SerializeField]
     private Transform target;
     [SerializeField]
@@ -30,12 +30,15 @@ public class AIController : MonoBehaviour {
     private Transform apuntar;
     [SerializeField]
     private float health;
+    [SerializeField]
+    private int destination;
     
 
     // Use this for initialization
     void Start () {
-        pathManager = GetComponent<NavMeshAgent>();
-        pathManager.updateRotation = false;
+        navMesh = GetComponent<NavMeshAgent>();
+        navMesh.updateRotation = false;
+        target = lastTarget;
     }
 
     // Update is called once per frame
@@ -52,8 +55,21 @@ public class AIController : MonoBehaviour {
         correctRot.z = -90;
         model.transform.localEulerAngles = correctRot;
 
-        pathManager.SetDestination(target.transform.position);
+        navMesh.SetDestination(target.transform.position);
 
+        if (navMesh.velocity.sqrMagnitude <= 0.1f)//organizar final
+        {
+            if (destination < path.Length-1)
+            {
+                destination++;
+                target = path[destination];
+            }
+            else
+            {
+                destination=0;
+                target = path[destination];
+            }
+        }
 
     }
 
@@ -79,6 +95,7 @@ public class AIController : MonoBehaviour {
             health -= other.GetComponent<Bullet>().Damage;
             if (health <= 0)
             {
+                GameManager.Instance.EnemyNumber--;
                 Destroy(this.gameObject);
             }
         }
