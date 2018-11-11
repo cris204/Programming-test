@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AIController : MonoBehaviour {
 
-    private NavMeshAgent navMesh;
+    private NavMeshAgent agent;
     [SerializeField]
     private Transform target;
     [SerializeField]
@@ -32,19 +32,26 @@ public class AIController : MonoBehaviour {
     private float health;
     [SerializeField]
     private int destination;
+    [SerializeField]
+    private float dist;
+    [SerializeField]
+    private Animator anim;
     
 
     // Use this for initialization
     void Start () {
-        navMesh = GetComponent<NavMeshAgent>();
-        navMesh.updateRotation = false;
+        GameManager.Instance.EnemyNumber++;
+        GameManager.Instance.EnemiesLeftText();
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
         target = lastTarget;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        dist = agent.remainingDistance;
         targetPostition.x = target.position.x;
         targetPostition.y = target.transform.position.y;
         targetPostition.z = apuntar.position.z;
@@ -55,22 +62,28 @@ public class AIController : MonoBehaviour {
         correctRot.z = -90;
         model.transform.localEulerAngles = correctRot;
 
-        navMesh.SetDestination(target.transform.position);
+        agent.SetDestination(target.transform.position);
 
-        if (navMesh.velocity.sqrMagnitude <= 0.1f)//organizar final
+        if (!detectPlayer)
         {
-            if (destination < path.Length-1)
+            if (dist <= 1)
             {
-                destination++;
-                target = path[destination];
+                target = path[Random.Range(0, path.Length)];
+            }
+        }
+        else
+        {
+            if (dist<3f)
+            {
+                agent.speed = 0;
+               
             }
             else
             {
-                destination=0;
-                target = path[destination];
+                agent.speed = 2;
             }
         }
-
+        anim.SetFloat("Speed", agent.speed);
     }
 
 
@@ -88,6 +101,7 @@ public class AIController : MonoBehaviour {
 
             target = other.transform;
             detectPlayer = true;
+            anim.SetLayerWeight(1, 1);
             StartCoroutine("Shooting");
         }
         if (other.CompareTag("Bullet"))
@@ -110,6 +124,8 @@ public class AIController : MonoBehaviour {
 
             detectPlayer = false;
             StopCoroutine("Shooting");
+            agent.speed = 1;
+            anim.SetLayerWeight(1, 0);
         }
     }
 
@@ -124,9 +140,9 @@ public class AIController : MonoBehaviour {
         {
             yield return null;
             bullet = BulletEnemyPool.Instance.GetBullet();
-            bullet.transform.localPosition = model.transform.position;
-            bullet.velocity = weapon.transform.forward * force;
-            yield return new WaitForSeconds(1f);
+            bullet.transform.localPosition = weapon.transform.position;
+            bullet.velocity = apuntar.transform.forward * force;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

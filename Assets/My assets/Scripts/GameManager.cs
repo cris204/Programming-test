@@ -40,6 +40,13 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private Color winColorBG;
 
+    [Header("UI")]
+    [SerializeField]
+    private Image healthBar;
+    [SerializeField]
+    private Text enemiesLeft;
+
+
     private void Awake()
     {
         if (instance == null)
@@ -50,6 +57,11 @@ public class GameManager : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        EnemiesLeftText();
     }
 
     private void Update()
@@ -68,7 +80,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-
     public void GameOver()
     {
         if (PlayerController.Instance.Health <= 0)
@@ -82,6 +93,17 @@ public class GameManager : MonoBehaviour {
     public void ActivatedNeedAKey(bool activated)
     {
         haveKeyText.SetActive(activated);
+    }
+
+    public void ModifyHealthBar()
+    {
+        
+        StartCoroutine(FilledHealth());
+    }
+
+    public void EnemiesLeftText()
+    {
+        enemiesLeft.text = string.Format("Alive: {0}", enemyNumber.ToString());
     }
 
     #region coroutine
@@ -112,6 +134,26 @@ public class GameManager : MonoBehaviour {
 
             }
         }
+    }
+
+    IEnumerator FilledHealth()
+    {
+        Debug.Log("si");
+        while (true)
+        {
+            yield return null;
+            if (PlayerController.Instance.Health / 10 < healthBar.fillAmount)
+            {
+                healthBar.fillAmount -= 0.01f;
+
+            }
+            else {
+                break;
+            }
+            
+
+        }
+        Debug.Log("rip");
     }
 
     #endregion

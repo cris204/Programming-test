@@ -25,23 +25,24 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private Vector2 vectorRotation;
     private float deltaSpeed;
-
     [SerializeField]
-    private Vector3 aimDirection = Vector2.zero;
+    private float timeToRotate;
+    [SerializeField]
+    private bool rightJoystickToRotate;
+    [SerializeField]
+    private Rigidbody rb;
 
-    [Header("Components")]
+
+
+    [Header("Components and shoot")]
     [SerializeField]
     private Animator anim;
     [SerializeField]
-    private Rigidbody rb;
+    private Vector3 aimDirection = Vector2.zero;
     [SerializeField]
     private Joystick leftjoystick;
     [SerializeField]
     private Joystick rightjoystick;
-
-    [Header("Shoot")]
-    [SerializeField]
-    private JoyButton joyButton;
     [SerializeField]
     public Vector3 bulletDirection;
 
@@ -86,7 +87,7 @@ public class PlayerController : MonoBehaviour {
         {
             anim.SetFloat("Speed", vectorSpeed.magnitude);
         }
-        if (!Shooting.Instance.CanShot || PlayerController.Instance.JoyButton.pressed)
+        if (!Shooting.Instance.CanShot || Rightjoystick.Direction.magnitude>0.8f)
         {
             anim.SetLayerWeight(1, 1);
         }
@@ -98,25 +99,42 @@ public class PlayerController : MonoBehaviour {
 
     private void CalculateDirections()
     {
-        if (Mathf.Abs(vectorRotation.x) >= 0.2)
+        if ( vectorRotation.x!=0 || vectorRotation.x != 0)
         {
-            aimDirection.x = vectorRotation.x;
+            if (Mathf.Abs(vectorRotation.x) >= 0.2)
+            {
+                aimDirection.x = vectorRotation.x;
+            }
+            if (Mathf.Abs(vectorRotation.y) >= 0.2)
+            {
+                aimDirection.z = vectorRotation.y;
+            }
+            transform.rotation = Quaternion.LookRotation(AimDirection.normalized);
+            timeToRotate = 0;
         }
-        if (Mathf.Abs(vectorRotation.y) >= 0.2)
+        else if(timeToRotate>=2)
         {
-            aimDirection.z = vectorRotation.y;
-        }
-        transform.rotation = Quaternion.LookRotation(AimDirection.normalized);
+            if (Mathf.Abs(vectorSpeed.x) >= 0.2)
+            {
+                aimDirection.x = vectorSpeed.x;
+            }
+            if (Mathf.Abs(vectorSpeed.y) >= 0.2)
+            {
+                aimDirection.z = vectorSpeed.y;
+            }
+            transform.rotation = Quaternion.LookRotation(AimDirection.normalized);
 
+        }
+        timeToRotate += Time.deltaTime;
     }
 
     private void AsignInputs()
     {
-        vectorSpeed.x = (leftjoystick.Horizontal * (speed * Time.deltaTime));
-        vectorSpeed.y = (leftjoystick.Vertical * (speed * Time.deltaTime));
+        vectorSpeed.x = (Leftjoystick.Horizontal * (speed * Time.deltaTime));
+        vectorSpeed.y = (Leftjoystick.Vertical * (speed * Time.deltaTime));
 
-        vectorRotation.x = (rightjoystick.Horizontal * (speed * Time.deltaTime));
-        vectorRotation.y = (rightjoystick.Vertical * (speed * Time.deltaTime));
+        vectorRotation.x = (Rightjoystick.Horizontal * (speed * Time.deltaTime));
+        vectorRotation.y = (Rightjoystick.Vertical * (speed * Time.deltaTime));
     }
 
     public void Shoot()
@@ -163,6 +181,7 @@ public class PlayerController : MonoBehaviour {
 
         if (other.CompareTag("EnemyBullet"))
         {
+            GameManager.Instance.ModifyHealthBar();
             health -= other.GetComponent<EnemyBullet>().Damage;
         }
     }
@@ -194,19 +213,6 @@ public class PlayerController : MonoBehaviour {
 
     #region Get&Set
 
-    public JoyButton JoyButton
-    {
-        get
-        {
-            return joyButton;
-        }
-
-        set
-        {
-            joyButton = value;
-        }
-    }
-
     public Vector3 AimDirection
     {
         get
@@ -233,5 +239,30 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public Joystick Leftjoystick
+    {
+        get
+        {
+            return leftjoystick;
+        }
+
+        set
+        {
+            leftjoystick = value;
+        }
+    }
+
+    public Joystick Rightjoystick
+    {
+        get
+        {
+            return rightjoystick;
+        }
+
+        set
+        {
+            rightjoystick = value;
+        }
+    }
     #endregion
 }

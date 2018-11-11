@@ -20,6 +20,11 @@ public class Bullet : MonoBehaviour
         BulletPool.Instance.ReleaseBullet(rb);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        BulletPool.Instance.ReleaseBullet(rb);
+    }
+
     #region Get&Set
     public float Damage
     {

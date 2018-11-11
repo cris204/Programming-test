@@ -59,9 +59,10 @@ public class Shooting : MonoBehaviour {
         rotationVector.z = PlayerController.Instance.AimDirection.y;
         weapon.transform.rotation = Quaternion.LookRotation(rotationVector);
 
-        if (PlayerController.Instance.JoyButton.pressed && CanShot)
+        if (PlayerController.Instance.Rightjoystick.Direction.magnitude>0.8f && CanShot)
         {
 
+        
             bullet = BulletPool.Instance.GetBullet();
             bullet.transform.position = weapon.transform.position;
             bullet.velocity = weapon.transform.forward * force;
