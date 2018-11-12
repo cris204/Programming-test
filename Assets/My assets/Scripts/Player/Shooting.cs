@@ -62,9 +62,11 @@ public class Shooting : MonoBehaviour {
         if (PlayerController.Instance.Rightjoystick.Direction.magnitude>0.8f && CanShot)
         {
 
-        
+            PlayerController.Instance.AudioPlayer.clip = PlayerController.Instance.Clips[0];
+            PlayerController.Instance.AudioPlayer.Play();
             bullet = BulletPool.Instance.GetBullet();
             bullet.transform.position = weapon.transform.position;
+            bullet.transform.localRotation = transform.rotation;
             bullet.velocity = weapon.transform.forward * force;
             CanShot = false;
             StartCoroutine(Shot());

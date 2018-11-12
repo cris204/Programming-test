@@ -36,6 +36,10 @@ public class AIController : MonoBehaviour {
     private float dist;
     [SerializeField]
     private Animator anim;
+    [SerializeField]
+    private AudioSource audioIA;
+    [SerializeField]
+    private AudioClip[] clips;
     
 
     // Use this for initialization
@@ -45,6 +49,7 @@ public class AIController : MonoBehaviour {
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         target = lastTarget;
+        audioIA = GetComponent<AudioSource>();
         
     }
 
@@ -98,7 +103,8 @@ public class AIController : MonoBehaviour {
             {
                 lastTarget = target;
             }
-
+            audioIA.clip = clips[0];
+            
             target = other.transform;
             detectPlayer = true;
             anim.SetLayerWeight(1, 1);
@@ -110,7 +116,10 @@ public class AIController : MonoBehaviour {
             if (health <= 0)
             {
                 GameManager.Instance.EnemyNumber--;
-                Destroy(this.gameObject);
+                GameManager.Instance.EnemiesLeftText();
+                audioIA.clip = clips[1];
+                audioIA.Play();
+                gameObject.SetActive(false);
             }
         }
     }
@@ -139,8 +148,11 @@ public class AIController : MonoBehaviour {
         while (detectPlayer)
         {
             yield return null;
+            audioIA.clip = clips[0];
+            audioIA.Play();
             bullet = BulletEnemyPool.Instance.GetBullet();
             bullet.transform.localPosition = weapon.transform.position;
+            bullet.transform.localRotation = apuntar.transform.rotation;
             bullet.velocity = apuntar.transform.forward * force;
             yield return new WaitForSeconds(0.5f);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        Time.timeScale = 1;
         if (instance == null)
         {
             instance = this;
@@ -103,9 +105,14 @@ public class GameManager : MonoBehaviour {
 
     public void EnemiesLeftText()
     {
-        enemiesLeft.text = string.Format("Alive: {0}", enemyNumber.ToString());
+        enemiesLeft.text = string.Format("Enemies: {0}", enemyNumber.ToString());
     }
 
+    public void ChangeScene(string name)
+    {
+        
+        SceneManager.LoadScene(name);
+    }
     #region coroutine
 
     IEnumerator Fade(bool winner)
@@ -138,7 +145,6 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator FilledHealth()
     {
-        Debug.Log("si");
         while (true)
         {
             yield return null;
@@ -153,7 +159,6 @@ public class GameManager : MonoBehaviour {
             
 
         }
-        Debug.Log("rip");
     }
 
     #endregion

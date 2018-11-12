@@ -31,6 +31,10 @@ public class PlayerController : MonoBehaviour {
     private bool rightJoystickToRotate;
     [SerializeField]
     private Rigidbody rb;
+    [SerializeField]
+    private AudioSource audioPlayer;
+    [SerializeField]
+    private AudioClip[] clips;
 
 
 
@@ -58,6 +62,7 @@ public class PlayerController : MonoBehaviour {
         }
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        AudioPlayer = GetComponent<AudioSource>();
     }
 
     // Use this for initialization
@@ -139,6 +144,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Shoot()
     {
+
         Shooting.Instance.Attack();
     }
 
@@ -163,6 +169,8 @@ public class PlayerController : MonoBehaviour {
         }
         if (other.CompareTag("Key"))
         {
+            audioPlayer.clip = clips[2];
+            audioPlayer.Play();
             GameManager.Instance.HaveKey = true;
             other.gameObject.SetActive(false);
         }
@@ -181,6 +189,8 @@ public class PlayerController : MonoBehaviour {
 
         if (other.CompareTag("EnemyBullet"))
         {
+            AudioPlayer.clip = Clips[1];
+            AudioPlayer.Play();
             GameManager.Instance.ModifyHealthBar();
             health -= other.GetComponent<EnemyBullet>().Damage;
         }
@@ -262,6 +272,32 @@ public class PlayerController : MonoBehaviour {
         set
         {
             rightjoystick = value;
+        }
+    }
+
+    public AudioSource AudioPlayer
+    {
+        get
+        {
+            return audioPlayer;
+        }
+
+        set
+        {
+            audioPlayer = value;
+        }
+    }
+
+    public AudioClip[] Clips
+    {
+        get
+        {
+            return clips;
+        }
+
+        set
+        {
+            clips = value;
         }
     }
     #endregion
