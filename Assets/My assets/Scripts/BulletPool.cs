@@ -16,11 +16,11 @@ public class BulletPool : MonoBehaviour
 
     [SerializeField]
     private Rigidbody bulletPrefab;
-
     [SerializeField]
     private int size;
     [SerializeField]
     private List<Rigidbody> bullets;
+    private Rigidbody bullet;
 
     private void Awake()
     {
@@ -30,20 +30,26 @@ public class BulletPool : MonoBehaviour
             PrepareBullets();
         }
         else
+        {
             Destroy(gameObject);
+        }
     }
 
     private void PrepareBullets()
     {
         bullets = new List<Rigidbody>();
         for (int i = 0; i < size; i++)
+        {
             AddBullet();
+        }
     }
 
     public Rigidbody GetBullet()
     {
         if (bullets.Count == 0)
+        {
             AddBullet();
+        }
         return AllocateBullet();
     }
 
@@ -58,14 +64,14 @@ public class BulletPool : MonoBehaviour
 
     private void AddBullet()
     {
-        Rigidbody instance = Instantiate(bulletPrefab);
-        instance.gameObject.SetActive(false);
-        bullets.Add(instance);
+        bullet = Instantiate(bulletPrefab);
+        bullet.gameObject.SetActive(false);
+        bullets.Add(bullet);
     }
 
     private Rigidbody AllocateBullet()
     {
-        Rigidbody bullet = bullets[bullets.Count - 1];
+        bullet = bullets[bullets.Count - 1];
         bullets.RemoveAt(bullets.Count - 1);
         bullet.gameObject.SetActive(true);
         return bullet;

@@ -9,6 +9,11 @@ TagManager:
   - Inside
   - Back
   - DoorInside
+  - Bullet
+  - EnemyBullet
+  - Enemy
+  - Key
+  - LockDoor
   layers:
   - Default
   - TransparentFX
@@ -22,13 +27,13 @@ TagManager:
   - Door
   - Inside
   - Back
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Limits
+  - Enemy
+  - Bullet
+  - EnemyBullet
+  - key
+  - EnemyDetect
+  - Player
   - 
   - 
   - 
